@@ -1,0 +1,23 @@
+{
+  "name": "plp-bonding",
+  "version": "1.0.0",
+  "description": "A decentralized finance application for bonding PLP tokens",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "hardhat compile",
+    "deploy": "hardhat deploy"
+  },
+  "keywords": [
+    "decentralized",
+    "finance",
+    "plp",
+    "bonding"
+  ],
+  "author": "Your Name <your@email.com>",
+  "license": "MIT",
+  "dependencies": {
+    "hardhat": "^2.4.0",
+    "hardhat-deploy": "^3.3.3"
+  }
+}
