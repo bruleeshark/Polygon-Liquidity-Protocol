@@ -8,9 +8,9 @@ TLDR of this project is that it is basically $CVX + $OHM, built on top of Balanc
 
 This protocol will swap LP tokens for ERC20 governance token or swap governance for LP tokens
 resulting output is not fully claimable for 30 days, creating mechanisme for 30d weighted speculation on either PLP or underlying LiquidityPool token price
-if you are bullish PLP in the next 30d, bond LP tokens for gov tokens.
-if you are bullish LPtokenPrice in the next 30d, bond PLP for LP tokens.
-reverse operations for bearish outlook.
+* if you are bullish PLP in the next 30d, bond LP tokens for gov tokens.
+* if you are bullish LPtokenPrice in the next 30d, bond PLP for LP tokens.
+ * reverse operations for bearish outlook.
 
 But why is PLP useful or desirable? and why is the underlying LiquidityPool token desireable?
 
