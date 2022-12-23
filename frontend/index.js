@@ -25,6 +25,21 @@ const ratioPLPTreasuryEl = document.getElementById("ratio-plp-treasury");
 const treasuryUSDEl = document.getElementById("treasury-usd");
 const multisigUSDEl = document.getElementById("multisig-usd");
 
+async function getUSDValue(value) {
+// Convert the value to ETH
+const valueETH = ethers.utils.formatEther(value);
+
+// Fetch the current ETH price in USD
+const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd");
+const data = await response.json();
+const ethPriceUSD = data.ethereum.usd;
+
+// Calculate the value in USD
+const valueUSD = valueETH * ethPriceUSD;
+
+return valueUSD;
+}
+
 // Update the balance of PLP
 const balancePLP = await plpToken.balanceOf(address);
 balancePLPEl.innerText = `${balancePLP} PLP`;
