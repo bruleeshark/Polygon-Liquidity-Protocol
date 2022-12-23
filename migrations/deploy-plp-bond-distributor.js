@@ -1,5 +1,11 @@
 // ./projectfolder/scripts/deploy-plp-bond-distributor.js
 
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const privateKey = process.env.PRIVATE_KEY;
+
 // Import the Hardhat runtime environment
 const { use, task } = require("hardhat");
 
