@@ -64,3 +64,8 @@ function updatePriceWithValidation() public onlyOwner {
 
 event PriceUpdated(uint256 newPrice);
 }
+
+function setBalancerPool(address _balancerPool) public onlyOwner {
+    balancerPool = _balancerPool;
+    require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
+}
