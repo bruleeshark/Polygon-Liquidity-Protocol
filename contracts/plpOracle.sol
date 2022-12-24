@@ -11,24 +11,45 @@ contract plpOracle is Ownable {
     using SafeMath for uint256;
     using Address for address;
 
-    address public owner;
-    uint256 public price;
-    address public balancerPool;
+address public owner;
+uint256 public price;
+address public balancerPool;
+uint public rateLimit;
+uint public lastUpdate;
 
-    constructor(address _balancerPool) public {
-        owner = msg.sender;
-        balancerPool = _balancerPool;
-        require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
-    }
+constructor(address _balancerPool) public {
+    owner = msg.sender;
+    balancerPool = _balancerPool;
+    require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
+    rateLimit = 1 minutes;
+}
 
-    function updatePrice() public onlyOwner {
-        require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
-        // Fetch the current price of the PLP token in the Balancer pool
-        price = IBalancerPool(balancerPool).getTokenPrice(address(this)).div(1e18);
-        emit PriceUpdated(price);
-    }
+function updatePrice() public onlyOwner {
+    require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
+    require(now >= lastUpdate + rateLimit, "Update rate limit exceeded");
 
-    function getPrice() public view returns (uint256) {
-        return price;
-    }
+    // Fetch the current price of the PLP token in the Balancer pool
+    price = IBalancerPool(balancerPool).getTokenPrice(address(this)).div(1e18);
+
+    // Validate the price
+    require(price > 0, "Invalid price returned by Balancer pool");
+
+    lastUpdate = now;
+    emit PriceUpdated(price);
+}
+
+function getPrice() public view returns (uint256) {
+    return price;
+}
+
+function setBalancerPool(address _balancerPool) public onlyOwner {
+    balancerPool = _balancerPool;
+    require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
+}
+
+function() external payable {
+    revert("Accidental send of ETH to contract");
+}
+
+event PriceUpdated(uint256 newPrice);
 }
