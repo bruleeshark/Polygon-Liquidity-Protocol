@@ -11,22 +11,23 @@ contract plpOracle is Ownable {
 using SafeMath for uint256;
 using Address for address;
 
-Copy code
 address public owner;
 uint256 public price;
 address public balancerPool;
 
 constructor(address _balancerPool) public {
-    owner = msg.sender;
-    balancerPool = _balancerPool;
-    require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
+owner = msg.sender;
+balancerPool = _balancerPool;
+require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
 }
 
 function updatePrice() public onlyOwner {
-    require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
-    // Fetch the current price of the PLP token in the Balancer pool
-    price = IBalancerPool(balancerPool).getTokenPrice(address(this)).div(1e18);
-    emit PriceUpdated(price);
+require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
+// Add reentrancy guard
+require(!address(this).balance.add(1e18).isZero(), "Potential reentrancy attack detected");
+// Fetch the current price of the PLP token in the Balancer pool
+price = IBalancerPool(balancerPool).getTokenPrice(address(this)).div(1e18);
+emit PriceUpdated(price);
 }
 
 function getPrice() public view returns (uint256) {
