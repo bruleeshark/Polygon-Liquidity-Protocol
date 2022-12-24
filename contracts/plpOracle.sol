@@ -66,6 +66,15 @@ event PriceUpdated(uint256 newPrice);
 }
 
 function setBalancerPool(address _balancerPool) public onlyOwner {
+    // Check if the provided address is a contract
+    require(Address(_balancerPool).isContract(), "Provided address is not a contract");
+    // Ensure that the provided address is not the zero address
+    require(_balancerPool != address(0), "Cannot set zero address as Balancer pool");
+    // Ensure that the new Balancer pool address is different from the current one
+    require(balancerPool != _balancerPool, "New Balancer pool address is the same as the current one");
     balancerPool = _balancerPool;
-    require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
+    // Emit event to notify interested parties of the change
+    emit BalancerPoolUpdated(_balancerPool);
 }
+
+event BalancerPoolUpdated(address newBalancerPool);
