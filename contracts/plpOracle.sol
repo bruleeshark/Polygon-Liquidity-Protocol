@@ -8,33 +8,24 @@ import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/ownershi
 import "./IBalancerPool.sol";
 
 contract plpOracle is Ownable {
-    using SafeMath for uint256;
-    using Address for address;
+using SafeMath for uint256;
+using Address for address;
 
+Copy code
 address public owner;
 uint256 public price;
 address public balancerPool;
-uint public rateLimit;
-uint public lastUpdate;
 
 constructor(address _balancerPool) public {
     owner = msg.sender;
     balancerPool = _balancerPool;
     require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
-    rateLimit = 1 minutes;
 }
 
 function updatePrice() public onlyOwner {
     require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
-    require(now >= lastUpdate + rateLimit, "Update rate limit exceeded");
-
     // Fetch the current price of the PLP token in the Balancer pool
     price = IBalancerPool(balancerPool).getTokenPrice(address(this)).div(1e18);
-
-    // Validate the price
-    require(price > 0, "Invalid price returned by Balancer pool");
-
-    lastUpdate = now;
     emit PriceUpdated(price);
 }
 
@@ -47,8 +38,27 @@ function setBalancerPool(address _balancerPool) public onlyOwner {
     require(Address(balancerPool).isContract(), "Balancer pool address is not a contract");
 }
 
+// Fallback function to prevent accidental sends of ETH to the contract
 function() external payable {
-    revert("Accidental send of ETH to contract");
+    revert("Sending ETH to this contract is not allowed");
+}
+
+// Rate limit the updatePrice function to prevent potential DoS attacks
+// Only allow updates once every hour
+function updatePriceWithLimit() public onlyOwner {
+    require(now > lastUpdateTime + 1 hours, "Update price rate limit exceeded");
+    updatePrice();
+    lastUpdateTime = now;
+}
+
+// Data validation for the price returned by the Balancer pool
+function updatePriceWithValidation() public onlyOwner {
+    // Fetch the current price of the PLP token in the Balancer pool
+    uint256 newPrice = IBalancerPool(balancerPool).getTokenPrice(address(this)).div(1e18);
+    // Ensure that the new price is within 10% of the previous price
+    require(newPrice <= price * 1.1 && newPrice >= price * 0.9, "Invalid price returned by the Balancer pool");
+    price = newPrice;
+    emit PriceUpdated(price);
 }
 
 event PriceUpdated(uint256 newPrice);
