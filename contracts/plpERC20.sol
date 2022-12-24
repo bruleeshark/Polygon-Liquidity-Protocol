@@ -1,7 +1,7 @@
 pragma solidity ^0.6.0;
 
 import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
-import "./PriceFeed.sol";
+import "./plpOracle.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/utils/Address.sol";
 
