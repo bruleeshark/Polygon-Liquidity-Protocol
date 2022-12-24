@@ -38,12 +38,12 @@ function updateAddresses(address _multisig, address _treasury) onlyOwner {
     emit AddressesUpdated(_multisig, _treasury);
     }
 }
-}
 
+{
     event AddressesUpdated(address _multisig, address _treasury);
     event Swap(address indexed sender, uint amount, uint lpAmount);
     event LPClaimed(address indexed _sender, uint _amount);
-
+}
 
     constructor(address _multisig, address _treasury, address _plpAddress, address _lpAddress) public {
     require(_multisig != address(0), "Multisig address cannot be the zero address");
