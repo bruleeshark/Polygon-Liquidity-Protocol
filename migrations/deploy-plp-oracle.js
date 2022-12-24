@@ -4,9 +4,10 @@ const path = require("path");
 const PlpOracle = artifacts.require("plpOracle");
 
 module.exports = async function(deployer) {
-  // Read in the address of the Balancer pool from the .env file
-  const balancerPoolAddress = fs.readFileSync(path.join(__dirname, ".env"), "utf-8").trim();
+// Read in the address of the Balancer pool from the .env file
+const balancerPoolAddress = fs.readFileSync(path.join(__dirname, ".env"), "utf-8").trim();
 
-  // Deploy the plpOracle contract, passing in the address of the Balancer pool
-  await deployer.deploy(PlpOracle, balancerPoolAddress);
+// Deploy the plpOracle contract, passing in the address of the Balancer pool
+const plpOracle = await deployer.deploy(PlpOracle, balancerPoolAddress);
+console.log(plpOracle contract deployed at address: ${plpOracle.address});
 };
