@@ -11,26 +11,22 @@ contract plpERC20 is SafeERC20 {
     string public symbol = "PLP";
     uint8 public decimals = 18;
     uint public totalSupply = 7000000 * (10 ** uint(decimals));
-    PriceFeed public priceFeed;
-    PriceOracle private priceOracle;
+    plpOracle public priceOracle;
 
     constructor() public {
         // mint all tokens and assign them to the contract address
         _mint(address(this), totalSupply);
-        // Set the address of the oracle contract as the price feed
-        priceFeed = PriceOracle(priceOracle);
     }
 
-    function setPriceOracle(PriceOracle _priceOracle) public onlyOwner {
+    function setPriceOracle(plpOracle _priceOracle) public onlyOwner {
         require(Address.isContract(_priceOracle), "Provided address is not a contract");
         priceOracle = _priceOracle;
-        priceFeed = PriceOracle(priceOracle);
         emit OracleUpdated(priceOracle);
     }
 
     function getPrice() public view returns (uint) {
-        return priceFeed.latestAnswer();
+        return priceOracle.getPrice();
     }
 
-    event OracleUpdated(PriceOracle _priceOracle);
+    event OracleUpdated(plpOracle _priceOracle);
 }
