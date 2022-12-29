@@ -15,6 +15,8 @@ contract plpBondDistributor is Ownable {
     address public lpAddress;
     uint public totalPLP;
     uint public totalLP;
+    // Number of seconds in a day
+    uint public constant DAYS = 86400;
     uint public constant MAX_SWAPS_PER_DAY = 10;
     mapping(address => uint) public bondedPLP;
     mapping(address => uint) public bondedLP;
@@ -26,9 +28,6 @@ contract plpBondDistributor is Ownable {
     }
 
     mapping(address => Bond) public bonds;
-
-    // Number of seconds in a day
-    uint public constant DAYS = 86400;
 
 function updateAddresses(address _multisig, address _treasury) onlyOwner {
     require(_multisig != address(0), "Multisig address cannot be the zero address");
