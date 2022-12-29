@@ -55,7 +55,9 @@ constructor(address _multisig, address _treasury, address _plpAddress, address _
     function swapPLPForLP(uint _amount) public {
         require(_amount != 0, "Amount cannot be zero");
         require(rateLimiter.canExecute(msg.sender), "Maximum number of swaps per day exceeded");
+        // Check that the user has sufficient balance and allowance for the PLP tokens
         require(ERC20(plpAddress).balanceOf(msg.sender) >= _amount, "Insufficient PLP balance");
+        require(ERC20(plpAddress).allowance(msg.sender, address(this)) >= _amount, "Insufficient PLP allowance");
         require(bondedPLP[msg.sender] >= _amount, "Insufficient bonded PLP balance");
         uint lpAmount = _amount.mul(9).div(10);
         totalPLP = totalPLP.add(_amount);
@@ -65,7 +67,7 @@ constructor(address _multisig, address _treasury, address _plpAddress, address _
         ERC20(plpAddress).transferFrom(msg.sender, address(this), _amount);
         ERC20(lpAddress).transfer(msg.sender, lpAmount);
         rateLimiter.execute(msg.sender);
-    emit Swap(msg.sender, _amount, lpAmount);
+        emit Swap(msg.sender, _amount, lpAmount);
 }
 
     function claimLP(uint _amount) public {
